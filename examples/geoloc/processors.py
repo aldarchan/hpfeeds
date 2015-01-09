@@ -132,15 +132,17 @@ def amun_events(identifier, payload, gi, dest_ip):
     else: dst_ip = dec.victimIP
     return create_message('amun.events', identifier, gi, src_ip=dec.attackerIP, dst_ip=dec.victimIP)
 
-def wordpot_event(identifier, payload, gi):
+def wordpot_event(identifier, payload, gi, dest_ip):
     try:
         dec = ezdict(json.loads(str(payload)))
     except:
         print 'exception processing wordpot alert'
         traceback.print_exc()
         return
+    if dec.dest_ip == None: dst_ip = dest_ip
+    else: dst_ip =dec.dest_ip
 
-    return create_message('wordpot.alerts', identifier, gi, src_ip=dec.source_ip, dst_ip=dec.dest_ip)
+    return create_message('wordpot.alerts', identifier, gi, src_ip=dec.source_ip, dst_ip)
 
 # TODO: use this function everywhere else is can be to clean up this code.
 def create_message(event_type, identifier, gi, src_ip, dst_ip):
@@ -178,7 +180,7 @@ def create_message(event_type, identifier, gi, src_ip, dst_ip):
 
     return message
 
-def shockpot_event(identifier, payload, gi):
+def shockpot_event(identifier, payload, gi, dest_ip):
     try:
         dec = ezdict(json.loads(str(payload)))
     except:
@@ -189,13 +191,13 @@ def shockpot_event(identifier, payload, gi):
     try:
         p = urlparse.urlparse(dec.url)
         socket.inet_aton(urlparse.urlparse(dec.url).netloc)
-        dest_ip = p.netloc
+        dest_ip1 = p.netloc
     except:
-        dest_ip = None
+        dest_ip1 = None
 
-    return create_message('shockpot.events', identifier, gi, src_ip=dec.source_ip, dst_ip=dest_ip)
+    return create_message('shockpot.events', identifier, gi, src_ip=dec.source_ip, dst_ip=dest_ip1)
 
-def p0f_event(identifier, payload, gi):
+def p0f_event(identifier, payload, gi, dest_ip):
     try:
         dec = ezdict(json.loads(str(payload)))
     except:
