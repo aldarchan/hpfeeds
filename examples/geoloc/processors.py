@@ -107,7 +107,7 @@ def snort_alerts(identifier, payload, gi, dest_ip):
         traceback.print_exc()
         return None
     if dec.destination_ip == None: dst_ip = dest_ip
-    else dst_ip = dec.destination_ip
+    else: dst_ip = dec.destination_ip
     return create_message('snort.alerts', identifier, gi, src_ip=dec.source_ip, dst_ip)
 
 def suricata_events(identifier, payload, gi, dest_ip):
