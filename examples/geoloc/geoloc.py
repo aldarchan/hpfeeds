@@ -33,7 +33,6 @@ if len(sys.argv) > 1:
     print >>sys.stderr, "Parsing config file: %s"%sys.argv[1]
     import json
     config = json.load(file(sys.argv[1]))
-    dl = json.load(file(sys.argv[2]))
     HOST        = config["HOST"]
     PORT        = config["PORT"]
     # hpfeeds protocol has trouble with unicode, hence the utf-8 encoding here
@@ -65,6 +64,9 @@ def main():
     gi[socket.AF_INET] = GeoIP.open("/opt/GeoLiteCity.dat",GeoIP.GEOIP_STANDARD)
     gi[socket.AF_INET6] = GeoIP.open("/opt/GeoLiteCityv6.dat",GeoIP.GEOIP_STANDARD)
 
+    with open(sys.argv[2], 'r') as f:
+        dl = dict(line.strip().split(None, 1) for line in f)
+
     try:
         hpc = hpfeeds.new(HOST, PORT, IDENT, SECRET)
     except hpfeeds.FeedException, e:
@@ -78,7 +80,7 @@ def main():
         p = None
         for p in procs:
             try:
-                dest_ip = dl[identifier]
+                dest_ip = dl.get(identifier)
                 m = p(identifier, payload, gi, dest_ip)
             except Exception, e:
                 print "invalid message %s" % payload
