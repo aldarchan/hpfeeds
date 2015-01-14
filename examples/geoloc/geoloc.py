@@ -8,6 +8,7 @@ from processors import *
 
 import GeoIP
 import traceback
+import ipaddress
 
 HOST = 'localhost'
 PORT = 10000
@@ -80,7 +81,7 @@ def main():
         p = None
         for p in procs:
             try:
-                dest_ip = dl.get(identifier)
+                dest_ip = ipaddress.ip_address(str(dl.get(identifier)))
                 m = p(identifier, payload, gi, dest_ip)
             except Exception, e:
                 print "invalid message %s" % payload
